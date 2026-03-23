@@ -126,4 +126,39 @@ router.post("/course/enroll", async (req, res) => {
   }
 });
 
+router.get("/user/full-data", async (req, res) => {
+  try {
+    const userId = req.headers["x-user-id"]; // temporary
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      return res.status(404).json({ success: false });
+    }
+
+    const courses = await Courses.find({
+      _id: { $in: user.CoursesIds }
+    }).populate({
+      path: "subjects",
+      select: "title lectures"
+    });
+
+    res.json({
+      success: true,
+      user: {
+        name: user.name,
+        email: user.email
+      },
+      courses
+    });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

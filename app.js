@@ -75,6 +75,8 @@ app.use((req, res, next) => {
 
 app.use("/api", require("./routes/UserHandaler.route"))
 app.use("/api", require("./routes/addCourses.route"))
+app.use("/api", require("./routes/subject.route"))
+app.use("/api", require("./routes/admin.route"))
 
 
 
